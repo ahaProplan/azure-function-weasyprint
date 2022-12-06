@@ -1,3 +1,6 @@
+# credit
+This is a fork from `plankje/azure-function-weasyprint`. I've made change to the function name and updated to newer version of weasyprint and azure function. This project is being hosted as a azure docker container app.
+
 # WeasyPrint template for Azure Function
 The function is set up with the help of the [Azure Function quickstart guide](https://docs.microsoft.com/en-us/azure/azure-functions/functions-create-first-azure-function-azure-cli).
 See also the [Azure custom Docker image tutorial](https://docs.microsoft.com/en-us/azure/app-service/containers/tutorial-custom-docker-image).
@@ -9,9 +12,6 @@ There is no need to init a new function with `func init <name>`, because the sca
 
 ## Setup project 
 * Do not name your project or function `weasyprint`, because this may cause naming conflicts with the Python module WeasyPrint that is used in this template.
-I chose for `pdf` as project name and `http-trigger` as function name, because different trigger types for PDF's may be created in the future.
-* Rename `local.settings.json.dist` to `local.settings.json` and replace the variables `AzureWebJobsStorage` and `APPINSIGHTS_INSTRUMENTATIONKEY`.
-The value for `AzureWebJobStorage` is the [Access Key connection string](https://stackoverflow.com/a/27584785) of the Azure storage account that is used with this function app.
 
 ## Setup local Docker
 Follow this procedure in case you want to deploy your own Dockerfile.
@@ -45,22 +45,3 @@ See the [Docker hub documentation](https://docs.docker.com/docker-hub/repos/) fo
 
 * Log in to docker with `docker login`.
 * Push the container with `docker push <image-name>`.
-
-## Deploy function to Azure
-This procedure assumes that you already set up an Azure Python function app with the Docker container you created before. 
-You can also create an Azure Python function app and use the Docker Hub image `plankje/azure-function-weasyprint`.
-The variable `<app_name>` in these instructions refer to the _function app_ name in Azure. 
-This is not to be confused with _function_ name `http-trigger`, which will be a function within your function app.
-
-* Make sure that in the Azure portal the setting `FUNCTION_WORKER_RUNTIME` exists and is set to `python` under `Platform features > Configuration > Application settings`  
-* Change the `authLevel` value of `http-trigger/function.json` to `function` if you want to enable key-based authentication. 
-Caution: this value will not work in your local Docker environment, and cause the application to give a 500 internal server error.
-* Publish the function app with `func azure functionapp publish <app_name> --build remote`. 
-With this command you will publish all functions that you created.
-It can take a few minutes before the `http-trigger` function becomes visible in the Azure portal.
-
-You should now be able to send a POST request to `https://<app_name>.azurewebsites.net/api/http-trigger?code=<function_key>`.
-The value for `<function_key>` is function specific and can found in the Azure portal under `http-trigger > Manage > Function keys > default`.
-This is a base64 encoded secret that serves as key-based authentication, which is defined in the file `http-trigger/function.json` under `authLevel`. 
-The query string key `code` in this URL is a conventional name by Azure.
-See [this blog post](https://vincentlauzon.com/2017/12/04/azure-functions-http-authorization-levels/) for more information about authorization levels.
