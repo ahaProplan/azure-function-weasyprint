@@ -1,6 +1,8 @@
 FROM mcr.microsoft.com/azure-functions/python:4-python3.9
 
+RUN sed -i'.bak' 's/$/ contrib/' /etc/apt/sources.list
 RUN apt-get update
+RUN apt-get install -y ttf-mscorefonts-installer fontconfig
 
 RUN apt-get install -y build-essential python3-venv python3-pip libpango-1.0-0 libpangoft2-1.0-0
 
